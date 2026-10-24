@@ -1,21 +1,23 @@
-MIT License
+import requests
+from pymiwifi import MiWiFi
 
-Copyright (c) 2018 Dev Aggarwal
+# 1. الاتصال بالراوتر بالكلمة التي تعرفها بعد الـ Reset
+router_ip = "10.2.134.254" # أو 192.168.31.1 حسب جهازك
+admin_password = "كلمة_مرور_المسؤول_الجديدة"
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+miwifi = MiWiFi(router_ip)
+miwifi.login(admin_password) # تسجيل الدخول البرمجي بنجاح
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+# 2. إرسال أمر برمي لتعديل بيانات الواي فاي (الاسم وكلمة المرور)
+# يتم استخدام الرابط الداخلي للراوتر المسؤول عن تعديل الواي فاي xqnetwork/set_wifi
+payload = {
+    'ssid': 'اسم_الشبكة_الجديد',
+    'password': 'كلمة_سر_الواي_فاي_الجديدة',
+    'encryption': 'WPA2PSK' # نوع التشفير
+}
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+# إرسال الطلب البرمجي للراوتر لتنفيذ التعديل فوراً
+response = miwifi.get_api_endpoint('xqnetwork/set_wifi', data=payload)
+
+print("تم تعديل البيانات بنجاح!")
+miwifi.logout()
